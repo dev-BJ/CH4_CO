@@ -33,15 +33,15 @@ self.addEventListener("message", (event) => {
 
   switch (msg.type) {
     case "START_POLLING":
-      startPolling();
+      // startPolling();
       break;
 
     case "STOP_POLLING":
-      stopPolling();
+      // stopPolling();
       break;
 
     case "CHECK_NOW":
-      checkForNewData();
+      // checkForNewData();
       break;
 
     case "UPDATE_THRESHOLDS":

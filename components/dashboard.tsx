@@ -114,28 +114,28 @@ export function Dashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Methane (CH4)"
-          value={latestReading?.ch4?.toFixed(2) || "--"}
+          value={Number(latestReading?.ch4).toFixed(2) || "--"}
           unit="ppm"
           icon={Flame}
           status={latestReading ? getStatus("ch4", latestReading.ch4) : "normal"}
         />
         <StatCard
           title="Carbon Monoxide (CO)"
-          value={latestReading?.co?.toFixed(2) || "--"}
+          value={Number(latestReading?.co).toFixed(2) || "--"}
           unit="ppm"
           icon={Wind}
           status={latestReading ? getStatus("co", latestReading.co) : "normal"}
         />
         <StatCard
           title="Humidity"
-          value={latestReading?.humidity?.toFixed(1) || "--"}
+          value={Number(latestReading?.humidity).toFixed(1) || "--"}
           unit="%"
           icon={Droplets}
           status={latestReading ? getStatus("humidity", latestReading.humidity) : "normal"}
         />
         <StatCard
           title="Temperature"
-          value={latestReading?.temperature?.toFixed(1) || "--"}
+          value={Number(latestReading?.temperature).toFixed(1) || "--"}
           unit="°C"
           icon={Thermometer}
           status={latestReading ? getStatus("temperature", latestReading.temperature) : "normal"}

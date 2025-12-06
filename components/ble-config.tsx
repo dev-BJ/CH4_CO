@@ -39,7 +39,8 @@ export function BleConfig() {
       setMessage("Scanning for devices...")
 
       const selectedDevice = await (navigator as any)?.bluetooth.requestDevice({
-        filters: [{ services: [WIFI_SERVICE_UUID] }],
+        acceptAllDevices: true,
+        // filters: [{ services: [WIFI_SERVICE_UUID] }],
         optionalServices: [WIFI_SERVICE_UUID],
       })
 

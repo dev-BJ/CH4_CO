@@ -78,13 +78,13 @@ export function DataTable({ data, thresholds = DEFAULT_THRESHOLDS }: DataTablePr
               paginatedData.map((reading, index) => (
                 <TableRow key={reading._id || index}>
                   <TableCell className="font-mono text-sm">{reading.deviceId}</TableCell>
-                  <TableCell className={cn(getCellClass("ch4", reading.ch4))}>{reading.ch4.toFixed(2)}</TableCell>
-                  <TableCell className={cn(getCellClass("co", reading.co))}>{reading.co.toFixed(2)}</TableCell>
+                  <TableCell className={cn(getCellClass("ch4", reading.ch4))}>{Number(reading.ch4).toFixed(2)}</TableCell>
+                  <TableCell className={cn(getCellClass("co", reading.co))}>{Number(reading.co).toFixed(2)}</TableCell>
                   <TableCell className={cn(getCellClass("humidity", reading.humidity))}>
-                    {reading.humidity.toFixed(1)}
+                    {Number(reading.humidity).toFixed(1)}
                   </TableCell>
                   <TableCell className={cn(getCellClass("temperature", reading.temperature))}>
-                    {reading.temperature.toFixed(1)}
+                    {Number(reading.temperature).toFixed(1)}
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
                     {new Date(reading.timestamp).toLocaleString()}
