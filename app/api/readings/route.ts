@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
 
     const dataSchema = z.object({
       deviceId: z.string(),
-      ch4: z.string(),
-      co: z.string(),
-      humidity: z.string(),
-      temperature: z.string(),
+      ch4: z.number(),
+      co: z.number(),
+      humidity: z.number(),
+      temperature: z.number(),
     })
 
     const validationResult = await dataSchema.safeParseAsync(data) // Validate incoming data
