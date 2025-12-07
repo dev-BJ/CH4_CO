@@ -68,6 +68,16 @@ export function BleConfig() {
         const value = await statusChar.readValue()
         const statusText = new TextDecoder().decode(value)
         setWifiStatus(statusText)
+
+        const ssidChar = await service.getCharacteristic(WIFI_SSID_CHAR_UUID)
+        const ssidValue = await ssidChar.readValue()
+        const currentSsid = new TextDecoder().decode(ssidValue)
+        setSsid(currentSsid)
+
+        const passwordChar = await service.getCharacteristic(WIFI_PASSWORD_CHAR_UUID)
+        const passwordValue = await passwordChar.readValue()
+        const currentPassword = new TextDecoder().decode(passwordValue)
+        setPassword(currentPassword)
       } catch {
         // Status characteristic might not exist
       }
