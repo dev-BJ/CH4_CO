@@ -58,7 +58,7 @@ export function SensorChart({ title, data, dataKey, unit, color, threshold }: Se
                 }}
                 labelStyle={{ color: "#ffffffff" }}
                 itemStyle={{ color: "#ffffffff" }}
-                formatter={(value: number) => [`${value.toFixed(2)} ${unit}`, title]}
+                formatter={(value: number) => [`${Number(value).toFixed(2)} ${unit}`, title]}
               />
               {threshold?.max && (
                 <Line

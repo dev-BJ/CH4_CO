@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getDatabase } from "@/lib/mongodb"
 import { type SensorReading, DEFAULT_THRESHOLDS } from "@/lib/types"
 import { handlePush } from "../push/send/route"
+import { z } from "zod"
 
 // GET - Fetch sensor readings
 export async function GET(request: NextRequest) {
@@ -30,11 +31,27 @@ export async function GET(request: NextRequest) {
 // POST - Receive data from hardware device
 export async function POST(request: NextRequest) {
   try {
+    const headless_param = Boolean(request.nextUrl.searchParams.get("headless")) || false
     const db = await getDatabase()
     const collection = db.collection<SensorReading>("readings")
     const thresholdsCollection = db.collection("thresholds")
 
     const data: Omit<SensorReading, "_id" | "timestamp"> = await request.json()
+
+    const dataSchema = z.object({
+      deviceId: z.string(),
+      ch4: z.string(),
+      co: z.string(),
+      humidity: z.string(),
+      temperature: z.string(),
+    })
+
+    const validationResult = await dataSchema.safeParseAsync(data) // Validate incoming data
+
+    if (!validationResult.success) {
+      console.error("Invalid data received:", validationResult.error)
+      return NextResponse.json({ error: "Invalid data received", success: false }, { status: 400 })
+    }
 
     const reading: SensorReading = {
       ...data,
@@ -70,6 +87,9 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    if (headless_param) {
+      return NextResponse.json({ success: true })
+    }
     return NextResponse.json({
       success: true,
       reading,
@@ -77,6 +97,9 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Failed to save reading:", error)
+    if (request.nextUrl.searchParams.get("headless")) {
+      return NextResponse.json({ success: false }, { status: 500 })
+    }
     return NextResponse.json({ error: "Failed to save reading", success: false }, { status: 500 })
   }
 }
