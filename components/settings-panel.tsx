@@ -191,7 +191,7 @@ export function SettingsPanel() {
               <p className="text-xs text-muted-foreground">Alert when methane exceeds this value</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="coMax">CO Maximum (ppm)</Label>
+              <Label htmlFor="coMax">CO2 Maximum (ppm)</Label>
               <Input
                 id="coMax"
                 type="number"

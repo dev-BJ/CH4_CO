@@ -120,7 +120,7 @@ export function Dashboard() {
           status={latestReading ? getStatus("ch4", latestReading.ch4) : "normal"}
         />
         <StatCard
-          title="Carbon Monoxide (CO)"
+          title="Carbon Monoxide (CO2)"
           value={Number(latestReading?.co).toFixed(2) || "--"}
           unit="ppm"
           icon={Wind}
@@ -153,9 +153,9 @@ export function Dashboard() {
           threshold={{ max: thresholds.ch4Max }}
         />
         <SensorChart
-          title="Carbon Monoxide (CO)"
+          title="Carbon Dioxide (CO2)"
           data={readings}
-          dataKey="co"
+          dataKey="CO2"
           unit="ppm"
           color="#ffffffff"
           threshold={{ max: thresholds.coMax }}
