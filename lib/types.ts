@@ -2,7 +2,7 @@ export interface SensorReading {
   _id?: string
   deviceId: string
   ch4: number // Methane in ppm
-  co: number // Carbon Monoxide in ppm
+  co2: number // Carbon Monoxide in ppm
   humidity: number // Percentage
   temperature: number // Celsius
   timestamp: Date | string

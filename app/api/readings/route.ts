@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const dataSchema = z.object({
       deviceId: z.string(),
       ch4: z.number(),
-      co: z.number(),
+      co2: z.number(),
       humidity: z.number(),
       temperature: z.number(),
     })
@@ -68,8 +68,8 @@ export async function POST(request: NextRequest) {
     if (reading.ch4 > thresholds.ch4Max) {
       alerts.push(`CH4 level (${reading.ch4} ppm) exceeds threshold`)
     }
-    if (reading.co > thresholds.coMax) {
-      alerts.push(`CO level (${reading.co} ppm) exceeds threshold`)
+    if (reading.co2 > thresholds.coMax) {
+      alerts.push(`CO level (${reading.co2} ppm) exceeds threshold`)
     }
     if (reading.humidity < thresholds.humidityMin || reading.humidity > thresholds.humidityMax) {
       alerts.push(`Humidity (${reading.humidity}%) out of range`)

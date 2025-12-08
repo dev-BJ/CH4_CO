@@ -40,7 +40,7 @@ export function StatCard({ title, value, unit, icon: Icon, status = "normal" }: 
               status === "danger" && "text-destructive",
             )}
           >
-            {value}
+            {!value ? 0 : value}
           </span>
           <span className="text-sm text-muted-foreground">{unit}</span>
         </div>

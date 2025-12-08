@@ -8,14 +8,16 @@ import { StatCard } from "@/components/stat-card"
 import { SensorChart } from "@/components/sensor-chart"
 import { DataTable } from "@/components/data-table"
 import { type SensorReading, type ThresholdSettings, DEFAULT_THRESHOLDS } from "@/lib/types"
-import { Flame, Wind, Droplets, Thermometer, RefreshCw, Wifi, WifiOff } from "lucide-react"
+import { Flame, Wind, Droplets, Thermometer, RefreshCw, Wifi, WifiOff, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Input } from "@/components/ui/input"
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export function Dashboard() {
   const [isPolling, setIsPolling] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
+  const [search, setSearch] = useState("")
 
   const {
     data: readingsData,
@@ -32,6 +34,7 @@ export function Dashboard() {
   }>("/api/thresholds", fetcher)
 
   const readings = readingsData?.readings || []
+  const filteredReadings = readings.filter((reading) => new Date(reading.timestamp).toLocaleString().includes(search.toLowerCase()))
   const thresholds = thresholdsData?.thresholds || DEFAULT_THRESHOLDS
   const latestReading = readings[0]
 
@@ -42,13 +45,13 @@ export function Dashboard() {
   }, [readings])
 
   const getStatus = useCallback(
-    (type: "ch4" | "co" | "humidity" | "temperature", value: number) => {
+    (type: "ch4" | "co2" | "humidity" | "temperature", value: number) => {
       switch (type) {
         case "ch4":
           if (value > thresholds.ch4Max) return "danger"
           if (value > thresholds.ch4Max * 0.8) return "warning"
           return "normal"
-        case "co":
+        case "co2":
           if (value > thresholds.coMax) return "danger"
           if (value > thresholds.coMax * 0.8) return "warning"
           return "normal"
@@ -96,15 +99,23 @@ export function Dashboard() {
             </span>
           </div>
           {lastUpdate && (
-            <span className="text-sm text-muted-foreground">Last update: {lastUpdate.toLocaleTimeString()}</span>
+            <span className="text-sm text-muted-foreground">
+              Last update: {lastUpdate.toLocaleTimeString()}
+            </span>
           )}
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setIsPolling(!isPolling)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsPolling(!isPolling)}
+          >
             {isPolling ? "Pause" : "Resume"}
           </Button>
           <Button variant="outline" size="sm" onClick={() => refreshReadings()}>
-            <RefreshCw className={cn("h-4 w-4 mr-2", !readingsData && "animate-spin")} />
+            <RefreshCw
+              className={cn("h-4 w-4 mr-2", !readingsData && "animate-spin")}
+            />
             Refresh
           </Button>
         </div>
@@ -117,65 +128,97 @@ export function Dashboard() {
           value={Number(latestReading?.ch4).toFixed(2) || "--"}
           unit="ppm"
           icon={Flame}
-          status={latestReading ? getStatus("ch4", latestReading.ch4) : "normal"}
+          status={
+            latestReading ? getStatus("ch4", latestReading.ch4) : "normal"
+          }
         />
         <StatCard
           title="Carbon Monoxide (CO2)"
-          value={Number(latestReading?.co).toFixed(2) || "--"}
+          value={Number(latestReading?.co2).toFixed(2) || "--"}
           unit="ppm"
           icon={Wind}
-          status={latestReading ? getStatus("co", latestReading.co) : "normal"}
+          status={latestReading ? getStatus("co2", latestReading.co2) : "normal"}
         />
         <StatCard
           title="Humidity"
           value={Number(latestReading?.humidity).toFixed(1) || "--"}
           unit="%"
           icon={Droplets}
-          status={latestReading ? getStatus("humidity", latestReading.humidity) : "normal"}
+          status={
+            latestReading
+              ? getStatus("humidity", latestReading.humidity)
+              : "normal"
+          }
         />
         <StatCard
           title="Temperature"
           value={Number(latestReading?.temperature).toFixed(1) || "--"}
           unit="°C"
           icon={Thermometer}
-          status={latestReading ? getStatus("temperature", latestReading.temperature) : "normal"}
+          status={
+            latestReading
+              ? getStatus("temperature", latestReading.temperature)
+              : "normal"
+          }
         />
       </div>
 
       {/* Charts */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <SensorChart
-          title="Methane (CH4)"
-          data={readings}
-          dataKey="ch4"
-          unit="ppm"
-          color="#ffffffff"
-          threshold={{ max: thresholds.ch4Max }}
-        />
-        <SensorChart
-          title="Carbon Dioxide (CO2)"
-          data={readings}
-          dataKey="CO2"
-          unit="ppm"
-          color="#ffffffff"
-          threshold={{ max: thresholds.coMax }}
-        />
-        <SensorChart
-          title="Humidity"
-          data={readings}
-          dataKey="humidity"
-          unit="%"
-          color="#ffffffff"
-          threshold={{ min: thresholds.humidityMin, max: thresholds.humidityMax }}
-        />
-        <SensorChart
-          title="Temperature"
-          data={readings}
-          dataKey="temperature"
-          unit="°C"
-          color="#ffffffff"
-          threshold={{ min: thresholds.temperatureMin, max: thresholds.temperatureMax }}
-        />
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by Timestamp..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                // setPage(0);
+              }}
+              className="pl-9"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <SensorChart
+            title="Methane (CH4)"
+            data={filteredReadings}
+            dataKey="ch4"
+            unit="ppm"
+            color="#ffffffff"
+            threshold={{ max: thresholds.ch4Max }}
+          />
+          <SensorChart
+            title="Carbon Dioxide (CO2)"
+            data={filteredReadings}
+            dataKey="co2"
+            unit="ppm"
+            color="#ffffffff"
+            threshold={{ max: thresholds.coMax }}
+          />
+          <SensorChart
+            title="Humidity"
+            data={filteredReadings}
+            dataKey="humidity"
+            unit="%"
+            color="#ffffffff"
+            threshold={{
+              min: thresholds.humidityMin,
+              max: thresholds.humidityMax,
+            }}
+          />
+          <SensorChart
+            title="Temperature"
+            data={filteredReadings}
+            dataKey="temperature"
+            unit="°C"
+            color="#ffffffff"
+            threshold={{
+              min: thresholds.temperatureMin,
+              max: thresholds.temperatureMax,
+            }}
+          />
+        </div>
       </div>
 
       {/* Data table */}
@@ -188,5 +231,5 @@ export function Dashboard() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

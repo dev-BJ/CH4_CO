@@ -19,16 +19,16 @@ export function DataTable({ data, thresholds = DEFAULT_THRESHOLDS }: DataTablePr
   const [page, setPage] = useState(0)
   const [search, setSearch] = useState("")
 
-  const filteredData = data.filter((reading) => reading.deviceId.toLowerCase().includes(search.toLowerCase()))
+  const filteredData = data.filter((reading) => reading.deviceId.toLowerCase().includes(search.toLowerCase()) || new Date(reading.timestamp).toLocaleString().includes(search.toLowerCase()))
 
   const totalPages = Math.ceil(filteredData.length / PAGE_SIZE)
   const paginatedData = filteredData.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
 
-  const getCellClass = (type: keyof Pick<SensorReading, "ch4" | "co" | "humidity" | "temperature">, value: number) => {
+  const getCellClass = (type: keyof Pick<SensorReading, "ch4" | "co2" | "humidity" | "temperature">, value: number) => {
     switch (type) {
       case "ch4":
         return value > thresholds.ch4Max ? "text-destructive font-medium" : ""
-      case "co":
+      case "co2":
         return value > thresholds.coMax ? "text-destructive font-medium" : ""
       case "humidity":
         return value < thresholds.humidityMin || value > thresholds.humidityMax ? "text-warning font-medium" : ""
@@ -45,7 +45,7 @@ export function DataTable({ data, thresholds = DEFAULT_THRESHOLDS }: DataTablePr
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by device ID..."
+            placeholder="Search by device ID or Timestamp..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value)
@@ -79,7 +79,7 @@ export function DataTable({ data, thresholds = DEFAULT_THRESHOLDS }: DataTablePr
                 <TableRow key={reading._id || index}>
                   <TableCell className="font-mono text-sm">{reading.deviceId}</TableCell>
                   <TableCell className={cn(getCellClass("ch4", reading.ch4))}>{Number(reading.ch4).toFixed(2)}</TableCell>
-                  <TableCell className={cn(getCellClass("co", reading.co))}>{Number(reading.co).toFixed(2)}</TableCell>
+                  <TableCell className={cn(getCellClass("co2", reading.co2))}>{Number(reading.co2).toFixed(2)}</TableCell>
                   <TableCell className={cn(getCellClass("humidity", reading.humidity))}>
                     {Number(reading.humidity).toFixed(1)}
                   </TableCell>

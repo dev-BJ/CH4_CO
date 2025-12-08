@@ -7,7 +7,7 @@ import type { SensorReading } from "@/lib/types"
 interface SensorChartProps {
   title: string
   data: SensorReading[]
-  dataKey: keyof Pick<SensorReading, "ch4" | "co" | "humidity" | "temperature">
+  dataKey: keyof Pick<SensorReading, "ch4" | "co2" | "humidity" | "temperature">
   unit: string
   color: string
   threshold?: { min?: number; max?: number }
