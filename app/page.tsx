@@ -21,7 +21,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white py-4 mt-8">
       <div className="container mx-auto text-center">
-        <p className="text-xl">CH4 and CO2 monitoring system constructed and designed by <em className="font-bold">Opeseyi Qoyum Adegboyega (249044030), A student of the University of Lagos</em></p>
+        <p className="text-md">CH4 and CO2 monitoring system constructed and designed by <em className="font-bold">Opeseyi Qoyum Adegboyega (249044030)</em>, A student of the <em className="font-bold">University of Lagos</em>.</p>
       </div>
     </footer>
   )
