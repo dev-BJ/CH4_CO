@@ -21,9 +21,9 @@ export async function GET(request: NextRequest) {
     const readings = await collection.find(query).sort({ timestamp: -1 }).toArray()
 
     if (format === "csv") {
-      const headers = ["Device ID", "CH4 (ppm)", "CO (ppm)", "Humidity (%)", "Temperature (°C)", "Timestamp"]
+      const headers = ["Device ID", "CH4 (ppm)", "CO2 (ppm)", "Humidity (%)", "Temperature (°C)", "Timestamp"]
       const rows = readings.map((r) =>
-        [r.deviceId, r.ch4, r.co, r.humidity, r.temperature, new Date(r.timestamp).toISOString()].join(","),
+        [r.deviceId, r.ch4, r.co2, r.humidity, r.temperature, new Date(r.timestamp).toISOString()].join(","),
       )
       const csv = [headers.join(","), ...rows].join("\n")
 
