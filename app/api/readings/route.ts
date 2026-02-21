@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getDatabase } from "@/lib/mongodb"
 import { type SensorReading, DEFAULT_THRESHOLDS } from "@/lib/types"
 import { handlePush } from "../push/send/route"
+import { calculateCalibration } from "@/lib/co2_ppm_calibration"
 import { z } from "zod"
 
 // GET - Fetch sensor readings
@@ -38,6 +39,8 @@ export async function POST(request: NextRequest) {
 
     const data: Omit<SensorReading, "_id" | "timestamp"> = await request.json()
 
+    const calibrationResult = calculateCalibration(425)
+
     const dataSchema = z.object({
       deviceId: z.string(),
       ch4: z.number(),
@@ -55,6 +58,7 @@ export async function POST(request: NextRequest) {
 
     const reading: SensorReading = {
       ...data,
+      co2: parseFloat((data.co2 * parseFloat(calibrationResult.z)).toFixed(2)), // Apply calibration factor
       timestamp: new Date(),
     }
 
