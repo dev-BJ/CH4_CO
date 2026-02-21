@@ -133,7 +133,7 @@ export function Dashboard() {
           }
         />
         <StatCard
-          title="Carbon Monoxide (CO2)"
+          title="Carbon Dioxide (CO2)"
           value={Number(latestReading?.co2).toFixed(2) || "--"}
           unit="ppm"
           icon={Wind}
